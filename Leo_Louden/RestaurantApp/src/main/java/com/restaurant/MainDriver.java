@@ -18,9 +18,9 @@ import com.restaurant.Session;
 public class MainDriver {
 	final static Logger logger = Logger.getLogger(MainDriver.class);
 	
-	private static String url = "jdbc:oracle:thin:@revychan.c3aa4wolhtt6.us-east-2.rds.amazonaws.com:1521:orcl";
-	private static String username = "chinook";
-	private static String password = "p4ssw0rd";
+	private static String url = "";
+	private static String username = "";
+	private static String password = "";
 
 	
 	

@@ -26,9 +26,9 @@ public class DAO {
 		}
 	}
 	
-	private static String url = "jdbc:oracle:thin:@revychan.c3aa4wolhtt6.us-east-2.rds.amazonaws.com:1521:orcl";
-	private static String username = "leo";
-	private static String password = "p4ssw0rd";
+	private static String url = "";
+	private static String username = "";
+	private static String password = "";
 	private static String[] user_role = {"offset", "Insured", "Policy Manager"};
 	
 	//get user reimbursements
