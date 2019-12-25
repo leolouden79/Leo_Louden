@@ -1,4 +1,6 @@
-This is the Restruant App that allows 2 types of accounts to be created: Restaurant Owners and Health Inspectors. 
+This is a Restruant App. 
+
+It allows 2 types of accounts to be created: Restaurant Owners and Health Inspectors. 
 
 Users interact with the app through the console using the scanner class.
 
