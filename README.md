@@ -1,3 +1,3 @@
-# Leo_Louden
+# Welcome to Leo Louden's Repository
 
-This is a repostory meant to showcase code for projects I have worked on, all of which are located in the folder "Leo_Louden."
+All code is located in the folder "Leo_Louden."
