@@ -1,4 +1,4 @@
-This is a Restruant App. 
+# Restruant App
 
 It allows 2 types of accounts to be created: Restaurant Owners and Health Inspectors. 
 
