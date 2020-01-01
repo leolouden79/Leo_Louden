@@ -10,3 +10,4 @@ Restaurant Users can add or delete fridges, add food to fridges,  and grant heal
 
 Health Inspectors can view the contents of any fridge they have access to and remove items from it. 
 
+Information is persisted using JDBC and Amazon's Relational Database Service. 
