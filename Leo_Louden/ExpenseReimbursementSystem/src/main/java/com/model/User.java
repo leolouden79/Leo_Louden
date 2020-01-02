@@ -7,14 +7,14 @@ public class User {
 	
 	//we need the user id to create new request 
 	
-	public int id;
+	public String id;
 	public String username;
 	public String name;
 	public String role;
 	public ArrayList<Reimbursement> reimbursements;
 	
 	
-	public User(int id, String username, String name, String role) {
+	public User(String id, String username, String name, String role) {
 		this.id = id;
 		this.username = username;
 		this.name = name;

@@ -26,20 +26,22 @@ public class DAO {
 		}
 	}
 	
-	private static String url = "";
-	private static String username = "";
-	private static String password = "";
+	//Get Amazon RDS Credentials from Java class whose file name will be put in GitIgnore 
+	private static String url = AmazonRDSCredentials.getUrl();
+	private static String username = AmazonRDSCredentials.getUsername();
+	private static String password = AmazonRDSCredentials.getPassword();
+	
 	private static String[] user_role = {"offset", "Insured", "Policy Manager"};
 	
 	//get user reimbursements
-	public static void getUserReimbursements(ArrayList<Reimbursement> reimbursements, int userid)	{
+	public static void getUserReimbursements(ArrayList<Reimbursement> reimbursements, String userid)	{
 		
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
 
 			String sql = "SELECT * FROM ers_reimburse WHERE reimb_author = ?";
 
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1,  Integer.toString(userid));
+			ps.setString(1,  userid);
 			ResultSet rs = ps.executeQuery();
 			
 			int eight = 0;
@@ -155,7 +157,7 @@ public class DAO {
 				return
 				
 					new User(
-						Integer.parseInt(rs.getString(1)), 
+						rs.getString(1), 
 						new_username, 
 						rs.getString(4) + " " + rs.getString(5),
 						user_role[Integer.parseInt(rs.getString(7))]

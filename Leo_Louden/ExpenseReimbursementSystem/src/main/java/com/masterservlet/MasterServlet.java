@@ -91,6 +91,7 @@ public class MasterServlet extends HttpServlet{
 			resp.sendRedirect(respsonseData.uri);
 		}
 		
+		//change this to a get request
 		if(respsonseData.type == "json") {
 			
 			HttpSession session  = req.getSession();
