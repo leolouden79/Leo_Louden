@@ -22,11 +22,6 @@ public class HealthInspector {
 	
 	public void viewFridges() {
 		
-		//for testing purposes DELETE. But put some of it in Session main method as test data
-//		testAccessibleFridges.add(testFridge);
-//		this.accessibleFridges = testAccessibleFridges;
-		//for testing purposes DELETE But put some of it in Session main method as test data
-	
 		int index;
 		Fridge f;
 		for(index = 0; index < accessibleFridges.size(); index++) {
@@ -45,20 +40,6 @@ public class HealthInspector {
 	}
 	
 	public void removeFood() {
-		//should be an option to completely empty.
-		
-		//needs to make test for when there are no accessible fridges
-		//needs to test for when the fridges are empty
-		
-		//first it display fridges
-		//then is lets you pick a fridge
-		//then it pick food from the fridge. There should be an option to pick one of the items, or all items, 
-		
-		//for testing purposes DELETE But put some of it in Session main method as test data
-//		ArrayList<Fridge> testAccessibleFridges = new ArrayList<Fridge>();
-//		testAccessibleFridges.add(testFridge);
-//		this.accessibleFridges = testAccessibleFridges;
-		//for testing purposes DELETE But put some of it in Session main method as test data
 		
 		System.out.println("Choose a Fridge to Remove Food From");
 		System.out.println();
@@ -70,10 +51,7 @@ public class HealthInspector {
 		f.getFridgeNumber() + " | Food: " + Arrays.toString(f.getFood()));
 			System.out.println();
 		}
-		
-		//Code above will not be needed when program is set up.
-		//But then again, you need the index number 
-		
+				
 		//Select Fridge from list of accessible fridges.
 		System.out.println("Enter here:");
 
@@ -159,7 +137,6 @@ public class HealthInspector {
 		
 		selectedFridge.setFood(newFood2);
 		
-		//We'll have to work around the fact that the list of food is a string array and not an array list of strings. Display null for empty indexes.
 		System.out.println("NEW FOOD LIST: " + Arrays.toString(newFood2));
 			
 	}

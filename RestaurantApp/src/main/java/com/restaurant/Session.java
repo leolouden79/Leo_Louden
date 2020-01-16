@@ -16,18 +16,10 @@ public class Session {
 	
 	final static Logger logger = Logger.getLogger(MainDriver.class);
 
-	//not sure if I should have a constrcutor yet
-	// changes made flag will be extra functionality.
-	// getters and setters for these variables will also be extra functionality
 	
 	
 	private ArrayList<Fridge> fridges;
-	//Do we actually need this
 	
-	// instantiate for testing purposes
-	//make a temporary constructor to load up some test data
-	//load a list of usernames so that createLoginInfo can make sure it doesn't duplicates. 
-	//I might make it extar functionality to ensure no duplicates
 	private ArrayList<Restaurant> restaurants;
 	private ArrayList<HealthInspector> healthInspectors;
 	private Scanner sc;
@@ -37,7 +29,7 @@ public class Session {
 		this.sc = sc;
 	}
 	
-
+	//This menu event loop for Restaurant users
 	public void restaurantEventLoop(Restaurant rest) {
 		
 		final int ADD_FRIDGE = 1;
@@ -120,6 +112,7 @@ public class Session {
 				
 	}
 
+	//Main menu event loop fot Health Inspectors
 	public void healthInspectorEventLoop(HealthInspector inspec) {
 		
 		final int VIEW_FRIDGES = 1;
@@ -174,49 +167,10 @@ public class Session {
 	}
 
 	public void loadSession(String url, String username, String password) {
-		//can either use this method or transport the logic to the health inspector constrcutor
-		//should take into account if there are no restaurant to health inspector objects saved in the database.
+
 		this.restaurants = new ArrayList<Restaurant> ();
 		this.healthInspectors = new ArrayList<HealthInspector> ();
-		
-		//TEST DATA
-//		String[] food = {"Spaghetti", "Pizza", "Cheese Burger", null, null};
-//		ArrayList<HealthInspector> testInspecs = new ArrayList<HealthInspector> ();
-//		Fridge testFridge = new Fridge( food, "Wendy's", 1, testInspecs);
-//		
-//		ArrayList<HealthInspector> testInspecs1 = new ArrayList<HealthInspector> ();
-//		String[] food1 = {"Fried Chicken", "Comb", "Cream of Mushroom Soup", null, null};
-//		Fridge testFridge1 = new Fridge( food1, "Senor Poopies", 1,  testInspecs1);
-//		
-//		
-//		ArrayList<Fridge> restFridges = new ArrayList<Fridge>();
-//		ArrayList<HealthInspector> testInspecs2 = new ArrayList<HealthInspector> ();
-//		Restaurant rest = new Restaurant("Wendy's", "1234", sc, testInspecs2, restFridges);
-//		
-//		ArrayList<Fridge> inspecFridges = new ArrayList<Fridge>();
-//		HealthInspector inspec = new HealthInspector("Bob Dole", "5678", inspecFridges, sc); 
-		
-		//Create restaurant objects first with empty list of fridges
-		//Then create fridge objects with empty list of health inspectors
-		//Then add fridges to restaurants
-		//Then create Health inspector objects with empty list of accessible fridges
-		//Then couple the fridges and health inspectors using a junction table 
-		
-//		rest.getFridges().add(testFridge);
-//		rest.getFridges().add(testFridge1);
-//		rest.getHealthInspectors().add(inspec);
-		
-		//Because these two are tighlty couple they need to be created together
-//		testFridge1.addHealthInspector(inspec);
-//		inspec.getAccessibleFridges().add(testFridge1);
-		
-		//Then create final list of restaurants and health inspectors
-//		restaurants.add(rest);
-//		healthInspectors.add(inspec);
-		
-		
-		//TEST DATA
-		
+			
 		ArrayList<Restaurant> rests = new ArrayList<Restaurant>();
 		Scanner sc = new Scanner(System.in);
 		ArrayList<HealthInspector> inspecs = new ArrayList<HealthInspector> ();
@@ -243,14 +197,11 @@ public class Session {
 			e.printStackTrace();
 		}
 
-		
-		
-		
-		
+	
 	}
 
+
 	public void saveSession(String url, String username, String password) {
-		//NEEDS TO MAKE SURE THAT EVERY FRIDGE HAS A UNIQUE FRIDGE CREATION NUMBER! Manually set
 		
 		logger.info("Insertering New Restaurant Credentials Into Database");
 		
@@ -438,14 +389,14 @@ public class Session {
 		}
 
 		String[] login = { username, password };
-		//System.out.println("Username: " + login[0] + "Password: " + login[1]);
+
 		return login;
 	}
 
 	private boolean usernameExist(String tempUsername) {
 		
 		for(Restaurant rest: restaurants) {
-			//System.out.println("THIS IS A USERNAME: " + rest.getUsername());
+			
 			if(tempUsername.equals(rest.getUsername())) {
 				return true;
 			}
@@ -550,8 +501,7 @@ public class Session {
 
 	public void exit() {
 		System.out.println("Big McThankies From McSpankies for Using Our App!");
-		//Maybe close all the scanners at the end?
-		//save data
+	
 
 	}
 
@@ -562,67 +512,11 @@ public class Session {
 	}
 
 	public static void main(String[] args) {
-		//This functionality will go in the main method in the Main Driver once the data base shit is set up.
+
 		
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//Getters, Setters and To String
+
 	@Override
 	public String toString() {
 		return "Session [fridges=" + fridges + ", restaurants=" + restaurants + ", healthInspectors=" + healthInspectors

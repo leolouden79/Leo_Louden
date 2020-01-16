@@ -13,7 +13,6 @@ public class Fridge {
 	public Fridge(String[] food, String owner, int fridgeNumber, ArrayList<HealthInspector> approvedInspectors) {
 		super();
 		//String array added to fridge needs to have size for 5 elements
-		//the fridge constructor 
 		this.food = food;
 		this.owner = owner;
 		this.fridgeNumber = fridgeNumber;
@@ -61,13 +60,6 @@ public class Fridge {
 		
 	}	
 	
-	
-	
-	
-//	@Override
-//	public boolean equals(Object o) {
-//		return false;
-//	}
 		
 	public void reorganizeArray() {
 		
@@ -91,61 +83,6 @@ public class Fridge {
 	public int getSize() {
 		return this.size;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 
     //getters, setters and toString

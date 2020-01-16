@@ -22,13 +22,8 @@ public class MainDriver {
 	private static String username = "";
 	private static String password = "";
 
-	
-	
-	
 	public static void main(String[] args) {
-		//databaseLoad();
-		
-		
+	
 		Session sesh = new Session();
 		sesh.loadSession(url, username, password);
 		sesh.startSession();
@@ -38,38 +33,5 @@ public class MainDriver {
 		
 	}
 
-
-//	private static void databaseLoad() {
-//		ArrayList<Restaurant> rests = new ArrayList<Restaurant>();
-//		Scanner sc = new Scanner(System.in);
-//		ArrayList<HealthInspector> inspecs = new ArrayList<HealthInspector> ();
-//		ArrayList<Fridge> fridges = new ArrayList<Fridge>();
-//		
-//		
-//		
-//		try (Connection conn = DriverManager.getConnection(url, username, password)) {
-//
-//			String sql = "SELECT * FROM restaurants";
-//
-//			PreparedStatement ps = conn.prepareStatement(sql);
-//			ResultSet rs = ps.executeQuery();
-//
-//			while (rs.next()) {
-//				rests.add(
-//						new Restaurant(rs.getString(1),
-//								rs.getString(2), sc, inspecs, fridges
-//						)
-//				);
-//			}
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//
-//		for(Restaurant r: rests) {
-//			System.out.println(r.getUsername() + " " + r.getPassword());
-//		}
-//		
-//	}
 
 }

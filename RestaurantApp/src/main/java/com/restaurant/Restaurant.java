@@ -33,7 +33,7 @@ public class Restaurant {
 	
 	//Uses fridgeCreationNum to identify fridges
 	public void addFridge() {
-		//Add fridge to array list and return fridge number that was created (why?)
+		//Add fridge to array list and return fridge number that was created
 		ArrayList<HealthInspector> inspecs = new ArrayList<HealthInspector> ();
 		String[] food = new String[5];
 		Fridge fridge = new Fridge(food, username, fridgeCreationNum, inspecs);
@@ -101,8 +101,6 @@ public class Restaurant {
 
 		}
 		
-		//Add a the ability to go back if you want
-		//delete fridge from health inspector list
 		fridge = fridges.get(optionNum);
 		Fridge inspecFridge;
 		ArrayList<Fridge> inspecFridges;
@@ -220,7 +218,6 @@ public class Restaurant {
 			return;
 		}
 		
-		//Make sure to check that the fridge has more one or more item. 
 		System.out.println("Choose a Fridge to Withdraw Food From");
 		System.out.println();
 		int index;
@@ -461,37 +458,7 @@ public class Restaurant {
 			System.out.println();
 			return;
 		}
-		
-		//FOR TESTING PURPOSES DELETE WHEN DONE
-		/*
-		 * String[] testFood = {"Cheese Burger", "Bacon," }; String[] testFood1 =
-		 * {"Spaghetti", "Donut", "Coffe" };
-		 * 
-		 * ArrayList<HealthInspector> testInspecs3 = new ArrayList<HealthInspector>();
-		 * Fridge testFridge = new Fridge(testFood, "Portillos's", 2, testInspecs3);
-		 * ArrayList<Fridge> testFridges = new ArrayList<Fridge>();
-		 * 
-		 * //This health inspector has testfridge added to it's list of accessible
-		 * fridges HealthInspector testInspec = new HealthInspector("Jacob", "p4ssw0rd",
-		 * testFridges, sc);
-		 * 
-		 * 
-		 * //This test fridge has no health inspectors. It should be the only fridge to
-		 * show up in the menu options ArrayList<HealthInspector> testInspecs2 = new
-		 * ArrayList<HealthInspector>(); Fridge testFridge1 = new Fridge(testFood1,
-		 * "Wendy's", 1, testInspecs2);
-		 * 
-		 * 
-		 * //This fridge has testInspec added to it's list of approved Inspectors, so it
-		 * should not show up in the menu option when choosing Jacob.
-		 * testFridge.addHealthInspector(testInspec);
-		 * 
-		 * //For testing this.healthInspectors.add(testInspec);
-		 * this.fridges.add(testFridge); this.fridges.add(testFridge1);
-		 */
-		//FOR TESTING PURPOSES DELETE WHEN DONE
-		
-		
+			
 		//Choose a Health InSpector
 		System.out.println("Choose a Health Inspector to Give Access to");
 		System.out.println();
@@ -549,12 +516,7 @@ public class Restaurant {
 			return;
 		}
 			
-				
-		//Give them a list of fridges that the health inspector doesn't already have access to, rather than verifying if input has already been done.
-		//Print to console "Fridges that {Health Inspector name} has not been granted access to"
-		//If there are no fridges that the health inspector has not been acces to print "error "please create new fridge." and then take user to resaurant event loop main menu by just
-		//"Select a fridge to grant access"
-		//might need a function to leave and go back, but not necessary
+
 		System.out.println("Grant " + inspec.getUsername() + " Access to one of the fridges below");
 		System.out.println();
 		int kdex;
@@ -612,49 +574,6 @@ public class Restaurant {
 		}	
 		return false;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
