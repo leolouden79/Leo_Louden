@@ -1,67 +1,98 @@
-/**
- * 
- */
 
 
 window.onload = function(){ 
-	console.log("jquery works");
+	
 	getUser();
-	document.getElementById("allreimb").addEventListener("click", addToTable);
-	document.getElementById("profile-tab").addEventListener("click", showForm);
-	document.getElementById("btn-butt").addEventListener("click", createReimbursement);
-
+	document.getElementById("contact-tab").addEventListener("click", logout);
 	
-	
+	//Stop form from refreshing page on submit
+	$("#my-form").submit(function(e) {
+	    e.preventDefault(); 
+	});
 
 
 }
 
-
+//Create reimbursement ticket request
 function createReimbursement(){
+	
 	type = document.getElementById("exampleFormControlSelect2").value;
 	amount = document.getElementById("cash").value;
 	descrip = document.getElementById("exampleFormControlTextarea1").value;
 	
+	console.log(type);
+	console.log(amount);
+	console.log(descrip);
+	
+	var typeId;
+	
+	switch(type) {
+	
+	  case "Rental Car":
+		  typeId = "1";
+	    break;
+	    
+	  case "Fuel Delivery":
+		  typeId = "2";
+	    break;
+	    
+	  case "Locksmith":
+		  typeId = "3";
+		    break;
+		    
+	  case "Car Tow":
+		  typeId = "4";
+		    break;
+	} 
 	
 	let xhttp = new XMLHttpRequest();
 
 	xhttp.onreadystatechange = function() {
 
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
-
 			
-			var data = new FormData();
-			data.append('type', type);
-			data.append('amount', amount);
-			data.append('descrip', descrip);
-				
-			xhttp.open("POST", "http://localhost:9005/ExpenseReimbursementSystem/newre");
-
-			xhttp.send(data);
-
+			console.log(JSON.parse(xhttp.responseText));
+			
+			window.location.reload(true);
+			
 		}
 
 	}
+	
+
+	var params = ('typeId=' + typeId + '&' + 'amount=' + amount + '&' + 'descrip=' + descrip);
+		
+	xhttp.open("POST", "http://localhost:9005/ExpenseReimbursementSystem/newre");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	console.log(params);
+	xhttp.send(params);
 
 	
 	
+}
+
+//End user session
+function logout() {
+	
+	let xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange= function(){
+			
+		if(xhttp.readyState==4 && xhttp.status==200){
+					
+			window.location.replace("http://localhost:9005/ExpenseReimbursementSystem/");
+		}
+	}
 	
 	
-	
-	
-	
+	xhttp.open("POST", 'http://localhost:9005/ExpenseReimbursementSystem/logout');
+	xhttp.send();
 	
 	
 }
 
 
 
-
-
-
-
-
-
+//Retrieve user object and corresponding list of reimbursements
 function getUser() {
 
 	let xhttp = new XMLHttpRequest();
@@ -72,20 +103,20 @@ function getUser() {
 
 			let user = JSON.parse(xhttp.responseText);
 
-			//console.log(user);
 			addToTable(user);
 
 		}
 
 	}
 
-	xhttp.open("POST", "http://localhost:9005/ExpenseReimbursementSystem/jason");
+	xhttp.open("POST", "http://localhost:9005/ExpenseReimbursementSystem/json");
 
 	xhttp.send();
+	
 
 }
 
-
+//Populate table with reimbursements
 function addToTable(user){
 	
 	let reimbursements = user.reimbursements;
@@ -93,9 +124,10 @@ function addToTable(user){
 	var mytable = document.getElementById("my-table");
 	
 	for (const element of reimbursements) {
-		  console.log(element);
+		
 	
 	var tr = document.createElement("tr");
+	tr.setAttribute("data-status", "button");
 	
 	var th = document.createElement("th");
 	th.innerHTML = element.author_str;
@@ -121,6 +153,35 @@ function addToTable(user){
 	var td7 = document.createElement("td");
 	td7.innerHTML = element.status_str;
 	
+
+	//add approve and deny buttons for Policy Manager only
+	if (user.role === "Policy Manager" && element.status_str === "Pending"){
+		
+		var b1 = document.createElement("button");
+		b1.setAttribute("type", "button");
+		b1.setAttribute("class", "btn btn-success");
+		b1.innerHTML = "Approve";
+		b1.setAttribute("data-id", element.id);
+		b1.setAttribute("data-status", 1);
+		b1.setAttribute("onClick", "UpdateReimbursement(this)");
+		
+		var b2 = document.createElement("button");
+		b2.setAttribute("type", "button");
+		b2.setAttribute("class", "btn btn-danger");
+		b2.innerHTML = "Deny";
+		b2.setAttribute("data-id", element.id);
+		b2.setAttribute("data-status", "2");
+		b2.setAttribute("onClick", "UpdateReimbursement(this)");
+		
+		var br1 = document.createElement("br");
+		var br2 = document.createElement("br");
+		
+		td7.appendChild(br1);
+		td7.appendChild(b1);
+		td7.appendChild(br2);
+		td7.appendChild(b2);	
+	
+	}
 	
 	tr.appendChild(th);
 	tr.appendChild(td1);
@@ -134,137 +195,73 @@ function addToTable(user){
 	mytable.appendChild(tr);
 	
 	
-	
 	}
 	
 	//add this even listener after users have been added
 	document.getElementById("home-tab").addEventListener("click", showTable); 
 	
+	if (user.role  === "Insured") {
+		document.getElementById("profile-tab").addEventListener("click", showForm);
+		document.getElementById("btn-butt").addEventListener("click", createReimbursement);
+	}
+	
 
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-function showTable(){
-	console.log("IN SHOW TABLE");
+//Approve or deny reimbursement
+function UpdateReimbursement(button){
 	
-	var blah = document.getElementById("blah");
+	let xhttp = new XMLHttpRequest();
 
-	blah.style.display = "none";
+	xhttp.onreadystatechange = function() {
+
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+
+			let resp = JSON.parse(xhttp.responseText);
+			
+			if(resp == "Success"){
+				window.location.reload(true);
+				
+			}
+			
+
+		}
+
+	}
+	
+	
+	var params = ('reimbId=' + button.getAttribute('data-id') + '&' + 'reimbStatus=' + button.getAttribute('data-status'));
+		
+	xhttp.open("POST", "http://localhost:9005/ExpenseReimbursementSystem/update");
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(params);
+
+	
+	
+}
+
+
+//Show table of reimbursements when Home button is clicked
+function showTable(){
+	
+	var form_container = document.getElementById("form_container");
+	form_container.style.display = "none";
 	
 	var table = document.getElementById("resptable");
-	
 	table.style.display = "";
 	
 }
 
 
-
+//Show reimbursement form when "Create Reimbursement" tab is clicked
 function showForm(){
-	console.log("IN SHOW FORM");
 	
 	var table = document.getElementById("resptable");
 	table.style.display = "none";
 	
-	var blah = document.getElementById("blah");
-
-	blah.style.display = "block";
+	var form_container = document.getElementById("form_container");
+	form_container.style.display = "block";
 	
 	
 }
-
-
-
-
-
-
-
-function getSW(){
-	//console.log("button clicked!");
-	
-	//we're going to be using the XMLHttpRequest object (aka xhttp)
-	
-	//get the value from the text field
-	let swId = document.getElementById('swId').value;
-	//console.log(swId);
-	
-	//STEP 1: create the XMLHttpRequest object
-	//this object allows us to make requests and get back data.
-	//in short, this is our data retriever object (it calls APIs)
-	let xhttp = new XMLHttpRequest();
-	
-	//STEP 2: create the callback function for readystate changes
-	/*
-	 * The XMLHttpRequest object has serveral states we need to know about
-	 * 
-	 * READY STATE
-	 * 		State 0:	not initialized
-	 * 		State 1:	server connection established
-	 * 		State 2:	request received
-	 * 		State 3:	processing request
-	 * 		State 4:	complete, request finished and response is ready
-	 */
-	xhttp.onreadystatechange= function(){
-		//console.log("ready state has changed!!!!");
-		
-		if(xhttp.readyState==4 && xhttp.status==200){z
-			//console.log("state=4 and status is successful");
-			
-			let sw = JSON.parse(xhttp.responseText);
-			//later, we can turn JS objects into JSONs using the
-			// "stringify" function
-			console.log(sw);
-			ourDOMManipulation(sw);
-		}
-	}
-	
-	//STEP 3: create and open a connection
-	//xhttp.open(http method, url)
-	//OR xhttp.open(http method, url, boolean async?)
-	xhttp.open("GET", 'https://swapi.co/api/people/'+swId);
-	
-	//STEP 4: send the request
-	xhttp.send();
-	
-}
-
-
-function ourDOMManipulation(ourJSON){
-	document.getElementById('swName').innerText=ourJSON.name;
-	document.getElementById('swBirthYear').innerText=ourJSON.birth_year;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

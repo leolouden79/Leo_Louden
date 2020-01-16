@@ -1,83 +1,66 @@
 package com.controllers;
 
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.masterservlet.HelperData;
+import org.apache.log4j.Logger;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.User;
 import com.service.ServiceLayer;
 
+//This controller handles the logic for logging users in and out
 public class LoginController {
 	
-	public static HelperData login(HttpServletRequest req, HttpServletResponse resp) {
-		HelperData responseData = new HelperData();
+	final static Logger logger = Logger.getLogger(LoginController.class);
+	
+	//Creates session for user if login credentials are valid
+	public static void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
 		HttpSession session  = req.getSession();
-		User usr;
-			
-//		if((usr = (User) session.getAttribute("LoggedInUser")) != null)	{
-//			System.out.println("In first if statement of login controller");
-//			
-//			responseData.uri = "http://localhost:9005/ExpenseReimbursementSystem/resources/html/home.html";
-//			responseData.type = "redirect";
-//			responseData.req = req;
-//			responseData.resp = resp;
-//			return responseData;
-//			
-//		}
-		
-		
-			
+		User user;
+				
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
 		
-		usr = ServiceLayer.getUser(username, password);
+		user = ServiceLayer.getUser(username, password);
 		
-		if(usr != null) {
+		if(user != null) {
 			
-			session.setAttribute("LoggedInUser", usr);
+
+			logger.info(user.getRole() + "user: " + user.getName() + " lust logged in");
 			
+			session.setAttribute("LoggedInUser", user);
 			
-			responseData.uri = "http://localhost:9005/ExpenseReimbursementSystem/resources/html/home.html";
-			responseData.type = "redirect";
-			responseData.req = req;
-			responseData.resp = resp;
+			//Only one reimbursement operation for a user at a time
+			final AtomicInteger counter = new AtomicInteger(0);
 			
-			//returnResource =  "resources/html/home.html";
+			session.setAttribute("OperationCounter", counter);
 			
-			//resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-			//resp.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-			//resp.setHeader("Expires", "0"); // Proxies.
-			
-			
-			//test out object writer
-			
-			
-			
-			//resp.getWriter().write(new ObjectMapper().writeValueAsString(usr));
-			
-			
-			
-			
-			
-			
-			
-			//req.getRequestDispatcher("/resources/html/home.html").forward(req, resp);
+			//Tell the client to request this page using the Post/Redirect/Get pattern	
+			resp.sendRedirect("http://localhost:9005/ExpenseReimbursementSystem/resources/html/home.html");
 		}
 		
 		else {
 
-			responseData.uri = "http://localhost:9005/ExpenseReimbursementSystem/resources/html/badlogin.html";
-			responseData.type = "redirect";
-			responseData.req = req;
-			responseData.resp = resp;
+			resp.sendRedirect("http://localhost:9005/ExpenseReimbursementSystem/resources/html/badlogin.html");
+
 		}
 		
+	}
+	
+	//Log user out by invalidating session
+	public static void logout(HttpServletRequest req, HttpServletResponse resp) throws JsonProcessingException, IOException {
 		
+		HttpSession session  = req.getSession();
+		session.invalidate();
+	
+		resp.setContentType("text/plain");
+		resp.getWriter().write(new ObjectMapper().writeValueAsString("Success"));
 		
-		
-		
-		return responseData;
+
 	}
 	
 

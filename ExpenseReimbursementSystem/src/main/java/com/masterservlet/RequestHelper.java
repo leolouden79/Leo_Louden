@@ -1,87 +1,60 @@
 package com.masterservlet;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import java.io.IOException;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.controllers.HomeController;
 import com.controllers.LoginController;
-import com.daolayer.DAO;
-import com.model.User;
+import com.controllers.ReimbursementController;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-
+//The request helper chooses a controller to handle the request based on the resource requested.
 public class RequestHelper {
 	
-	public static HelperData process(HttpServletRequest req, HttpServletResponse resp) {
-		
-		HelperData responseData = new HelperData();
-		HttpSession session  = req.getSession();
-		//String responseUri;
-		//String responseType;
+	
+	public static void process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			
-		
-		switch(req.getRequestURI()) {
-		
-		case "/ExpenseReimbursementSystem/masterserv": 
+		switch (req.getRequestURI()) {
+
+		//Login
+		case "/ExpenseReimbursementSystem/masterserv":
+			LoginController.login(req, resp);
+			return;
 			
-			responseData = LoginController.login(req,resp);		
-			return responseData;
+		//Home Page
+		case "/ExpenseReimbursementSystem/resources/html/home.html":
+			HomeController.homePage(req, resp);
+			return;
 			
-			
-			//approval and denials //parames will be reimbursement id and approval or denial
-		case "/ExpenseReimbursementSystem/verify":
-			String id = req.getParameter("reimburseId");
-			String dec = req.getParameter("decesion");
-			DAO.updateReimbursement(id, dec);
-			return null;
-			
-			// creating new reimbursements
+		//Aprove or Deny reimbursement
+		case "/ExpenseReimbursementSystem/update":
+			ReimbursementController.updateReimbursementPage(req, resp);
+			return;
+
+		//Create new reimbursement request
 		case "/ExpenseReimbursementSystem/newre":
-			
-			
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date date = new Date();
+			ReimbursementController.createReimbursementPage(req, resp);
+			return;
 
-			String amount = req.getParameter("amount");
-			String submitted = req.getParameter(dateFormat.format(date));
-			String resolved = "NULL";
-			String description = req.getParameter("descrip");
-			String author = ((User)(session.getAttribute("LoggedInUser"))).id;
-			String resolver = "NULL";
-			String statusID = req.getParameter("statusID");
-			String typeID = req.getParameter("typeID");
+		//Logout
+		case "/ExpenseReimbursementSystem/logout":	
+			LoginController.logout(req, resp);
+			return;
 
-			DAO.insert_reimbursement(amount, submitted, resolved, description, author, resolver, statusID, typeID);
-			System.out.println(dateFormat.format(date));
-			return null;
+		//Json request for User object and corresponding list of reimbursements
+		case "/ExpenseReimbursementSystem/json":		
+			HomeController.getUserJson(req, resp);
+			return;
 
-			
-			// logout post
-		case "/ExpenseReimbursementSystem/logout":
-			return null;
-
-			// json request for users
-		case "/ExpenseReimbursementSystem/jason":
-			
-			if(session.getAttribute("LoggedInUser") == null) {
-				System.out.println("You done goofed");
-			};
-			//resp.getSession
-			responseData.type = "json";
-			return responseData;
-			
-				
 		default:
-			System.out.println("Default requestHelper Fail");
-			System.out.println(req.getRequestURI());
-			return null;
-		
+			resp.setContentType("text/plain");
+			resp.getWriter().write(new ObjectMapper().writeValueAsString("Faliure"));
+			return;
+
 		}
-					
+
 	}
 
 }

@@ -2,23 +2,24 @@ package com.daolayer;
 
 import com.model.Reimbursement;
 import com.model.User;
-
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.apache.log4j.Logger;
 
-
+//This class's sole function is to perform database operations
 public class DAO {
+	
+	final static Logger logger = Logger.getLogger(DAO.class);
 	
 	static {
 		
-		System.out.println("In static block");
+		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 		}catch (ClassNotFoundException e) {
@@ -30,10 +31,10 @@ public class DAO {
 	private static String url = AmazonRDSCredentials.getUrl();
 	private static String username = AmazonRDSCredentials.getUsername();
 	private static String password = AmazonRDSCredentials.getPassword();
-	
+
 	private static String[] user_role = {"offset", "Insured", "Policy Manager"};
 	
-	//get user reimbursements
+	//Get reimbursements that correspond to a single Insured user
 	public static void getUserReimbursements(ArrayList<Reimbursement> reimbursements, String userid)	{
 		
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
@@ -47,7 +48,7 @@ public class DAO {
 			int eight = 0;
 			while (rs.next()) 
 			{
-				try { eight = Integer.parseInt(rs.getString(8)); //because this field is sometimes null, make to sure check for this on javascript side
+				try { eight = Integer.parseInt(rs.getString(8)); //This field can sometimes be null.
 					
 				} catch (NumberFormatException e) {
 					eight = 0; //set the resolver id field to zero by default
@@ -86,6 +87,7 @@ public class DAO {
 		return rsString;
 	}
 	
+	//Hash a username and password with a salt value that is stored in database
 	public static String getHash(String new_username, String new_password) {
 		
 		String output = "";
@@ -101,9 +103,7 @@ public class DAO {
 			
 			output = cs.getString(3);
 			return output;
-			//while(result.next());
-			//return cs.getString(1);
-
+			
 		} catch (SQLException e) {
 			System.out.println("In getHash");
 			e.printStackTrace();
@@ -112,15 +112,14 @@ public class DAO {
 		return output;
 	}
 	
+	
+	//Attempt to get a hashed password that corresponds with a given username
 	public static String getHashedPassword(String new_username) {
 	
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
 
 			String sql = "SELECT ers_password  FROM ers_users WHERE ers_username = ?";
-		
-			//String sql = "SELECT ers_password  FROM ers_users WHERE ers_username = " + new_username;
 			
-			System.out.println(sql);
 
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, new_username);
@@ -142,6 +141,7 @@ public class DAO {
 		
 	}
 	
+	//Create a user object by retrieving corresponding record from database
 	public static User createUser(String new_username) {
 		
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
@@ -169,10 +169,11 @@ public class DAO {
 			e.printStackTrace();
 		}
 		
-		
 		return null;
 	}
 	
+	//Create a Hash Map that links all user id's to a string with their first and last name.
+	//This way, reimbursement objects will have strings of names instead of numerical id's to represent the resolver and author fields.
 	public static HashMap<Integer, String> getUsers(){
 		
 		HashMap<Integer, String> users = new HashMap<Integer, String>();
@@ -193,7 +194,6 @@ public class DAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("getUsers");
 			return users;
 		}
 
@@ -201,6 +201,7 @@ public class DAO {
 		
 	}
 
+	//Get all reimbursements in the system. This is used by Policy Managers only.
 	public static void getAllReimbursements(ArrayList<Reimbursement> reimbursements) {
 		
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
@@ -213,7 +214,7 @@ public class DAO {
 			int eight = 0;
 			while (rs.next()) 
 			{
-				try { eight = Integer.parseInt(rs.getString(8)); //because this field is sometimes null, make to sure check for this on javascript side
+				try { eight = Integer.parseInt(rs.getString(8)); //This field is null when whenever a ending reimbursement is created
 					
 				} catch (NumberFormatException e) {
 					eight = 0; //set the resolver id field to zero by default
@@ -246,62 +247,54 @@ public class DAO {
 		
 	
 		
-	
-	public static void insert_reimbursement(String amount, String submitted, String resolved,
-			String description, String author, String resolver, String statusID, String typeID) {
+	//Insert new reimbursement ticket into database
+	public static void insert_reimbursement(String amount, String submitted, String resolved, String description, String author, String resolver, String statusID, String typeId) {
 
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
-
 	
-				
-			String sql = "INSERT INTO ers_reimburse VALUES( NULL, ?, ?, ?, ?, NULL, ?, ?, ?, ?)";
+			String sql = "INSERT INTO ers_reimburse VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, amount);
-			ps.setString(2, submitted);
-			ps.setString(3, resolved);
-			ps.setString(4, description);
-			ps.setString(5, author);
-			ps.setString(6, resolver);
-			ps.setString(7, statusID);
-			ps.setString(8, typeID);
+			
+			ps.setNull(1, 0); //Id is set by database sequence automatically when this param is Null
+			ps.setInt(2, Integer.parseInt(amount));
+			ps.setString(3, submitted);
+			ps.setNull(4, 0); //Date resolved column
+			ps.setString(5, description);
+			ps.setNull(6, 0); //Receipt column
+			ps.setInt(7, Integer.parseInt(author));
+			ps.setNull(8, 0); //User ID of Resolver column
+			ps.setInt(9, Integer.parseInt(statusID)); 
+			ps.setInt(10, Integer.parseInt(typeId)); 
 			ResultSet rs = ps.executeQuery();
 			
-			
-			
-			
-			
-			
-			//String sql = "INSERT INTO ers_status ers_reimbursement_status VALUES(" + test1 + "','" + test2 + "')"; 
-			//String sql = "INSERT INTO ers_reimburse VALUES(" + "NULL," + amount + "','" + submitted + "','" + resolved + "','" + description + ",NULL," + author + "','" + resolver + "','" + statusID + "','" + typeID + "')";
-
-
-			//Statement statement = conn.createStatement();
-			//int numOfRowsChanged = statement.executeUpdate(sql);
-			//System.out.println("The # of Inserted rows changed: " + numOfRowsChanged);
+			logger.info("New reimbursement Inserted into Database: [" + rs.toString() + "]");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		
 
 	}
 	
 	
-	
-	public static void updateReimbursement(String reimburseId, String decesion) {
+	//Update a reimbursement to either approve or deny
+	public static void updateReimbursement( String status, String resolved, String resolver, String reimburseId) {
 		
 		try (Connection conn = DriverManager.getConnection(url, username, password)) {
 
-			String sql = "UPDATE ers_reimburse SET reimb_status_id = ?  WHERE reimb_id = ?";
+			String sql = "UPDATE ers_reimburse SET reimb_status_id = ?, reimb_resolved = ?, reimb_resolver = ?  WHERE reimb_id = ?";
 			
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, decesion);
-			ps.setString(2, reimburseId);
+			ps.setString(1, status);
+			ps.setString(2, resolved);
+			ps.setString(3, resolver);
+			ps.setString(4, reimburseId);
+			
 			ResultSet rs = ps.executeQuery();
-
-			//Statement statement = conn.createStatement();
-			//int numOfRowsChanged = statement.executeUpdate(sql);
-			//System.out.println("The # of Updated rows changed: " + numOfRowsChanged);
+			
+			logger.info("Reimbursement Updated: [" + rs.toString() + "]");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -309,13 +302,7 @@ public class DAO {
 		
 	}
 	
-	
-	
 
-	
-	
-	
-	
 
 }
 

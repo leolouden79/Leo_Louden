@@ -21,7 +21,10 @@
   		<url-pattern>/masterserv</url-pattern>
   		<url-pattern>/resources/html/login.html</url-pattern>
   		<url-pattern>/resources/html/home.html</url-pattern>
-  		<url-pattern>/jason</url-pattern>
+  		<url-pattern>/json</url-pattern>
+  		<url-pattern>/newre</url-pattern>
+  		<url-pattern>/logout</url-pattern>
+  		<url-pattern>/update</url-pattern>
   		
   
   </servlet-mapping>

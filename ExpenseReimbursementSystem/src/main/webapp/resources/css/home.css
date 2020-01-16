@@ -13,7 +13,7 @@
 	opacity: 75%;
 /* 	overflow: scroll; */ the table insude should be scrollable.
      overflow: scroll;
- 
+ 	
 }
 
 .my-row-1 {
@@ -28,6 +28,12 @@
 	
 }
 
+.pm-nav-item {
+	
+ 	left: 45%; 
+	
+}
+
 .input-group mb-3 {
 	left: 43%;
 }
@@ -38,19 +44,6 @@
 	left: 81%;
 }
 
-/* .dropdown { */
-/* 	top: 2px; */
-/* 	left: 50%; */
-/* 	opacity: 100%; */
-/* 	right: 25%; */
-/* } */
-
-/* .dropdown-menu { */
-/*  	left: 29% !important; */
- 	
-
-	
-/* } */
 
 
 .my-col-1{
@@ -63,7 +56,7 @@
     border-bottom: 2px solid #ddd !important;
 }
 
-#blah  {
+#form_container  {
 	display: none; 
 	
 	border: 2px solid black;
@@ -97,9 +90,12 @@ td{
 
 body {
  background-image: url("background.jpg");
- 
- 
+ color: #000000	! important;  
  
 }
+
+ 
+
+
 
 
